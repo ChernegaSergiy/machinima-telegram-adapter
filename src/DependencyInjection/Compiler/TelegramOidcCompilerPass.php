@@ -14,23 +14,23 @@ final class TelegramOidcCompilerPass implements CompilerPassInterface
 {
     public function process(ContainerBuilder $container): void
     {
-        $clientId = getenv('TELEGRAM_OIDC_CLIENT_ID') ?: $container->getParameter('env(TELEGRAM_OIDC_CLIENT_ID)');
-
-        if (!$clientId || '0' === $clientId || '' === $clientId) {
-            $container->removeDefinition(TelegramOidcConfiguration::class);
-            $container->removeDefinition(TelegramOidcProvider::class);
-
+        if (!$container->hasParameter('env(TELEGRAM_OIDC_CLIENT_ID)')) {
             return;
         }
 
-        $definition = new Definition(TelegramOidcConfiguration::class, [
+        $clientId = $container->getParameter('env(TELEGRAM_OIDC_CLIENT_ID)');
+
+        if ('0' === $clientId || '' === $clientId) {
+            return;
+        }
+
+        $configDef = new Definition(TelegramOidcConfiguration::class, [
             '$clientId' => $clientId,
-            '$clientSecret' => getenv('TELEGRAM_OIDC_CLIENT_SECRET') ?: $container->getParameter('env(TELEGRAM_OIDC_CLIENT_SECRET)'),
-            '$redirectUri' => getenv('TELEGRAM_OIDC_REDIRECT_URI') ?: $container->getParameter('env(TELEGRAM_OIDC_REDIRECT_URI)'),
+            '$clientSecret' => $container->getParameter('env(TELEGRAM_OIDC_CLIENT_SECRET)'),
+            '$redirectUri' => $container->getParameter('env(TELEGRAM_OIDC_REDIRECT_URI)'),
             '$label' => 'Telegram',
         ]);
-
-        $container->setDefinition(TelegramOidcConfiguration::class, $definition);
+        $container->setDefinition(TelegramOidcConfiguration::class, $configDef);
 
         $providerDef = new Definition(TelegramOidcProvider::class);
         $providerDef->addTag('app.identity_provider');
