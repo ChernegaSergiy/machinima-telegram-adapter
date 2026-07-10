@@ -9,12 +9,10 @@ use App\Contract\PlatformUiContext;
 class TelegramPlatformUiContext implements PlatformUiContext
 {
     /**
-     * @param string        $initData
-     * @param string        $colorScheme 'dark' or 'light'
-     * @param array<string, string> $themeParams
+     * @param string                 $colorScheme 'dark' or 'light'
+     * @param array<string, string>  $themeParams
      */
     public function __construct(
-        private string $initData,
         private string $colorScheme = 'dark',
         private array $themeParams = [],
     ) {
@@ -33,11 +31,6 @@ class TelegramPlatformUiContext implements PlatformUiContext
     public function getTheme(): string
     {
         return $this->colorScheme;
-    }
-
-    public function getInitData(): ?string
-    {
-        return $this->initData;
     }
 
     public function getUserId(): ?string
