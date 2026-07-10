@@ -27,6 +27,9 @@ final class MachinimaTelegramAdapterBundle extends AbstractBundle
                 ->autowire()
                 ->autoconfigure()
             ->load('Morfeditorial\\MachinimaTelegramAdapter\\', '../src/')
-                ->exclude('../src/MachinimaTelegramAdapterBundle.php');
+                ->exclude([
+                    '../src/MachinimaTelegramAdapterBundle.php',
+                    '../src/Oidc/',
+                ]);
     }
 }
