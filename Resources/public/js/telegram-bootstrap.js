@@ -1,11 +1,5 @@
 /**
  * Bootstrap module for the Telegram Mini App platform adapter.
- *
- * Contract (see PlatformAdapterInterface::getBootstrapModulePath()): export
- * an async detect() that resolves { provider, assertion } if this platform
- * is present, or null otherwise. Core (app.js) knows nothing beyond that —
- * it doesn't know this is Telegram, doesn't know what "assertion" contains,
- * and never touches window.Telegram itself.
  */
 
 function loadTelegramSdk() {
@@ -31,10 +25,16 @@ export async function detect() {
     try {
         tg = await loadTelegramSdk();
     } catch (e) {
-        return null; // not running inside Telegram (or offline) — not an error, just "not this platform"
+        return null;
     }
 
     if (!tg.initData) return null;
+
+    // Cache theme params for later use by ui-hints when hash is lost on redirect
+    if (Object.keys(tg.themeParams || {}).length > 0) {
+        sessionStorage.setItem('tma_theme_params', JSON.stringify(tg.themeParams));
+        sessionStorage.setItem('tma_color_scheme', tg.colorScheme);
+    }
 
     tg.ready();
 

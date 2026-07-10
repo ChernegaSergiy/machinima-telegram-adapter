@@ -44,6 +44,27 @@ function loadTelegramSdk() {
     });
 }
 
+function getThemeParams(tg) {
+    let params = tg.themeParams || {};
+    if (Object.keys(params).length > 0) {
+        sessionStorage.setItem('tma_theme_params', JSON.stringify(params));
+        sessionStorage.setItem('tma_color_scheme', tg.colorScheme);
+    } else {
+        try { 
+            params = JSON.parse(sessionStorage.getItem('tma_theme_params')) || {}; 
+        } catch(e) {}
+    }
+    return params;
+}
+
+function getColorScheme(tg) {
+    let scheme = tg.colorScheme;
+    if (scheme) {
+        return scheme;
+    }
+    return sessionStorage.getItem('tma_color_scheme') || 'dark';
+}
+
 export async function apply(ctx) {
     let tg;
     try {
@@ -56,8 +77,12 @@ export async function apply(ctx) {
     document.body.classList.add('is-tma');
     document.title = 'Morf TMA';
 
-    applyThemeVars(tg.themeParams || {}, tg.colorScheme || 'dark');
-    tg.onEvent('themeChanged', () => applyThemeVars(tg.themeParams || {}, tg.colorScheme || 'dark'));
+    const updateTheme = () => {
+        applyThemeVars(getThemeParams(tg), getColorScheme(tg));
+    };
+
+    updateTheme();
+    tg.onEvent('themeChanged', updateTheme);
 
     if (window.location.pathname === '/login') {
         if (typeof Turbo !== 'undefined') {
