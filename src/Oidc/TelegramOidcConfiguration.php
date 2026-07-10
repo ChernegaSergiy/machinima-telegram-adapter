@@ -6,12 +6,21 @@ namespace Morfeditorial\MachinimaTelegramAdapter\Oidc;
 
 final class TelegramOidcConfiguration
 {
+    private string $clientId;
+    private string $clientSecret;
+    private string $redirectUri;
+    private string $label;
+
     public function __construct(
-        private readonly string $clientId,
-        private readonly string $clientSecret,
-        private readonly string $redirectUri,
-        private readonly string $label = 'Telegram',
+        string $clientId = '0',
+        string $clientSecret = '',
+        string $redirectUri = '',
+        string $label = 'Telegram',
     ) {
+        $this->clientId = $clientId;
+        $this->clientSecret = $clientSecret;
+        $this->redirectUri = $redirectUri;
+        $this->label = $label;
     }
 
     public function getClientId(): int
