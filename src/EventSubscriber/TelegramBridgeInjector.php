@@ -69,6 +69,11 @@ final class TelegramBridgeInjector implements EventSubscriberInterface
         window.__PLATFORM__.capabilities = ['tma', 'notifications', 'back_button'];
     }
 
+    // Set cookie so the server can detect Telegram on all subsequent requests
+    var cookieStr = "tma_init_data=" + encodeURIComponent(tg.initData) + "; path=/; max-age=86400;";
+    if (window.location.protocol === 'https:') cookieStr += " SameSite=None; Secure;";
+    document.cookie = cookieStr;
+
     // Zero-click login: if the current URL doesn't have initData, reload with it
     // so the server-side authenticator can validate and create a session.
     // The flag __tgAuthAttempted prevents infinite redirect loops.
@@ -81,11 +86,6 @@ final class TelegramBridgeInjector implements EventSubscriberInterface
             return;
         }
     }
-
-    // Set cookie so the server can detect Telegram on subsequent requests
-    var cookieStr = "tma_init_data=" + encodeURIComponent(tg.initData) + "; path=/; max-age=86400;";
-    if (window.location.protocol === 'https:') cookieStr += " SameSite=None; Secure;";
-    document.cookie = cookieStr;
 
     // Register the platform bridge for getPlatformBridge()
     window.__PLATFORM_BRIDGE__ = tg;
