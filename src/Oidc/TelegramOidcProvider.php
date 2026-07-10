@@ -40,11 +40,16 @@ final class TelegramOidcProvider implements IdentityProviderPort, IdentityProvid
 
     public function getMetadata(): array
     {
-        return [
+        $metadata = [
             'label' => $this->config->getLabel(),
             'icon' => 'send',
-            'login_url' => $this->router->generate('telegram_oidc_login'),
         ];
+
+        if ($this->config->isEnabled()) {
+            $metadata['login_url'] = $this->router->generate('telegram_oidc_login');
+        }
+
+        return $metadata;
     }
 
     public function getConfig(): TelegramOidcConfiguration

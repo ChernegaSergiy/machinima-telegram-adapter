@@ -48,4 +48,9 @@ final class TelegramOidcConfiguration
     {
         return 'https://oauth.telegram.org/.well-known/jwks.json';
     }
+
+    public function isEnabled(): bool
+    {
+        return $this->clientId > 0 && '' !== $this->clientSecret && '' !== $this->redirectUri;
+    }
 }
