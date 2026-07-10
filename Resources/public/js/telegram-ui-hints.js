@@ -1,11 +1,5 @@
 /**
  * UI-hints module for the Telegram Mini App platform adapter.
- *
- * Contract (see PlatformAdapterInterface::getUiHintsModulePath()): export a
- * apply(ctx) called once, only for a session already authenticated via this
- * adapter. Purely presentational — never involved in login. Core dispatches
- * a generic "platform:navigate" event on every Turbo navigation; what (if
- * anything) a hints module does with it is entirely its own business.
  */
 
 function applyThemeVars(themeParams, colorScheme) {
@@ -26,9 +20,6 @@ function applyThemeVars(themeParams, colorScheme) {
         colorScheme === 'dark' ? '255, 255, 255' : '0, 0, 0',
     );
 
-    // Cosmetic-only cookie, read back by TelegramPlatformAdapter::getUiContext()
-    // purely to avoid a flash of the wrong theme on the next SSR render. Not
-    // used for auth or platform detection.
     let cookie = 'tma_color_scheme=' + colorScheme + '; path=/; max-age=86400;';
     if (window.location.protocol === 'https:') cookie += ' SameSite=None; Secure;';
     document.cookie = cookie;
@@ -36,9 +27,31 @@ function applyThemeVars(themeParams, colorScheme) {
 
 const ROOT_ROUTES = ['app_index', 'app_categories', 'app_authors', 'app_notifications', 'app_profile', 'app_login'];
 
-export function apply(ctx) {
-    const tg = window.Telegram && window.Telegram.WebApp;
-    if (!tg) return;
+function loadTelegramSdk() {
+    if (window.Telegram && window.Telegram.WebApp) {
+        return Promise.resolve(window.Telegram.WebApp);
+    }
+    return new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        script.src = 'https://telegram.org/js/telegram-web-app.js';
+        script.onload = () => {
+            (window.Telegram && window.Telegram.WebApp)
+                ? resolve(window.Telegram.WebApp)
+                : reject(new Error('telegram-web-app.js loaded but window.Telegram.WebApp is missing'));
+        };
+        script.onerror = () => reject(new Error('Failed to load telegram-web-app.js'));
+        document.head.appendChild(script);
+    });
+}
+
+export async function apply(ctx) {
+    let tg;
+    try {
+        tg = await loadTelegramSdk();
+    } catch (e) {
+        console.error(e);
+        return;
+    }
 
     document.body.classList.add('is-tma');
     document.title = 'Morf TMA';
