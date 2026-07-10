@@ -5,6 +5,4 @@ services:
 
     Morfeditorial\MachinimaTelegramAdapter\:
         resource: '../src/'
-        exclude:
-            - '../src/MachinimaTelegramAdapterBundle.php'
-            - '../src/Oidc/'
+        exclude: '../src/MachinimaTelegramAdapterBundle.php'
