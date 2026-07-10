@@ -20,6 +20,12 @@ final class MachinimaTelegramAdapterBundle extends AbstractBundle
                 ->autowire()
                 ->autoconfigure()
             ->load('Morfeditorial\\MachinimaTelegramAdapter\\', '../src/')
-            ->exclude('../src/MachinimaTelegramAdapterBundle.php');
+                ->exclude('../src/MachinimaTelegramAdapterBundle.php')
+            ->load('Morfeditorial\\MachinimaTelegramAdapter\\Oidc\\', '../src/Oidc/');
+
+        $container->parameters()
+            ->set('telegram_oidc.client_id', '%env(TELEGRAM_OIDC_CLIENT_ID)%')
+            ->set('telegram_oidc.client_secret', '%env(TELEGRAM_OIDC_CLIENT_SECRET)%')
+            ->set('telegram_oidc.redirect_uri', '%env(TELEGRAM_OIDC_REDIRECT_URI)%');
     }
 }

@@ -5,13 +5,15 @@ services:
 
     Morfeditorial\MachinimaTelegramAdapter\:
         resource: '../src/'
-        exclude: '../src/MachinimaTelegramAdapterBundle.php'
+        exclude:
+            - '../src/MachinimaTelegramAdapterBundle.php'
+            - '../src/Oidc/'
 
     Morfeditorial\MachinimaTelegramAdapter\Oidc\TelegramOidcConfiguration:
         arguments:
-            $clientId: '%env(TELEGRAM_OIDC_CLIENT_ID)%'
-            $clientSecret: '%env(TELEGRAM_OIDC_CLIENT_SECRET)%'
-            $redirectUri: '%env(TELEGRAM_OIDC_REDIRECT_URI)%'
+            $clientId: '%telegram_oidc.client_id%'
+            $clientSecret: '%telegram_oidc.client_secret%'
+            $redirectUri: '%telegram_oidc.redirect_uri%'
             $label: 'Telegram'
 
     Morfeditorial\MachinimaTelegramAdapter\Oidc\TelegramOidcProvider:
