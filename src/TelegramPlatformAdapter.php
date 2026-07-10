@@ -9,44 +9,40 @@ use Morfeditorial\MachinimaTelegramAdapter\PlatformUiContext\TelegramPlatformUiC
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 use Symfony\Component\HttpFoundation\Request;
 
+/**
+ * Telegram Mini App platform adapter.
+ *
+ * Auth is handled entirely by TelegramMiniAppIdentityProvider (validated via
+ * AuthBootstrapController, driven by telegram-bootstrap.js). This class is
+ * purely presentational: which UI context a Telegram session gets, and
+ * where its bootstrap/UI-hints modules live. It no longer sniffs any
+ * request header, cookie, or query parameter to guess the platform.
+ */
 #[AutoconfigureTag('app.platform_adapter')]
 final class TelegramPlatformAdapter implements PlatformAdapterInterface
 {
-    public function supports(Request $request): bool
+    public function getPlatformName(): string
     {
-        return $request->headers->has('X-Telegram-Init-Data')
-            || $request->headers->has('X-Init-Data')
-            || $request->cookies->has('tma_init_data')
-            || $request->query->has('initData');
+        return 'telegram';
     }
 
-    public function getContext(Request $request): PlatformUiContext
+    public function getUiContext(Request $request): PlatformUiContext
     {
-        $initData = $request->headers->get('X-Telegram-Init-Data')
-            ?? $request->headers->get('X-Init-Data')
-            ?? $request->cookies->get('tma_init_data')
-            ?? $request->query->get('initData');
-
-        $colorScheme = $request->cookies->get('tma_color_scheme', 'dark');
-
+        // Purely cosmetic, adapter-owned cookies (set by telegram-ui-hints.js
+        // itself) — not used for auth or platform detection, only to avoid a
+        // flash of the wrong theme on the next SSR render.
         return new TelegramPlatformUiContext(
-            initData: (string) $initData,
-            colorScheme: $colorScheme,
+            colorScheme: $request->cookies->get('tma_color_scheme', 'dark'),
         );
     }
 
-    public function getBridgeTemplatePath(): ?string
+    public function getBootstrapModulePath(): ?string
     {
-        return '@MachinimaTelegramAdapter/bridge/telegram.html.twig';
+        return 'bundles/machinimatelegramadapter/js/telegram-bootstrap.js';
     }
 
-    public function getZeroClickLoginUrl(): ?string
+    public function getUiHintsModulePath(): ?string
     {
-        return '/telegram/zero-click';
-    }
-
-    public function getLoginRouteName(): ?string
-    {
-        return 'app_login';
+        return 'bundles/machinimatelegramadapter/js/telegram-ui-hints.js';
     }
 }
