@@ -12,3 +12,7 @@ services:
             $clientId: '%env(TELEGRAM_OIDC_CLIENT_ID)%'
             $clientSecret: '%env(TELEGRAM_OIDC_CLIENT_SECRET)%'
             $redirectUri: '%env(TELEGRAM_OIDC_REDIRECT_URI)%'
+
+    Morfeditorial\MachinimaTelegramAdapter\MiniApp\TelegramMiniAppIdentityProvider:
+        arguments:
+            $botToken: '%env(TELEGRAM_BOT_TOKEN)%'
