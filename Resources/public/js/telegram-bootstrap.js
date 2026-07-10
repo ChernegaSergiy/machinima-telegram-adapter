@@ -30,12 +30,6 @@ export async function detect() {
 
     if (!tg.initData) return null;
 
-    // Cache theme params for later use by ui-hints when hash is lost on redirect
-    if (Object.keys(tg.themeParams || {}).length > 0) {
-        sessionStorage.setItem('tma_theme_params', JSON.stringify(tg.themeParams));
-        sessionStorage.setItem('tma_color_scheme', tg.colorScheme);
-    }
-
     tg.ready();
 
     return {
