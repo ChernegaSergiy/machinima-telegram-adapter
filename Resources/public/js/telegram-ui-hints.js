@@ -3,22 +3,28 @@
  */
 
 function applyThemeVars(themeParams, colorScheme) {
+    if (!themeParams) themeParams = {};
     const themeMap = {
-        '--tg-theme-bg-color': themeParams.bg_color || '#FFFFFF',
-        '--tg-theme-text-color': themeParams.text_color || '#000000',
-        '--tg-theme-hint-color': themeParams.hint_color || '#555555',
-        '--tg-theme-link-color': themeParams.link_color || '#2481cc',
-        '--tg-theme-button-color': themeParams.button_color || '#2481cc',
-        '--tg-theme-button-text-color': themeParams.button_text_color || '#ffffff',
-        '--tg-theme-secondary-bg-color': themeParams.secondary_bg_color || '#f4f4f0',
+        '--tg-theme-bg-color': themeParams.bg_color,
+        '--tg-theme-text-color': themeParams.text_color,
+        '--tg-theme-hint-color': themeParams.hint_color,
+        '--tg-theme-link-color': themeParams.link_color,
+        '--tg-theme-button-color': themeParams.button_color,
+        '--tg-theme-button-text-color': themeParams.button_text_color,
+        '--tg-theme-secondary-bg-color': themeParams.secondary_bg_color,
     };
     Object.keys(themeMap).forEach((key) => {
-        document.documentElement.style.setProperty(key, themeMap[key]);
+        if (themeMap[key]) {
+            document.documentElement.style.setProperty(key, themeMap[key]);
+        }
     });
-    document.documentElement.style.setProperty(
-        '--shimmer-base',
-        colorScheme === 'dark' ? '255, 255, 255' : '0, 0, 0',
-    );
+
+    if (colorScheme) {
+        document.documentElement.style.setProperty(
+            '--shimmer-base',
+            colorScheme === 'dark' ? '255, 255, 255' : '0, 0, 0',
+        );
+    }
 
     const setCookie = (name, value) => {
         let cookie = `${name}=${value}; path=/; max-age=86400;`;
@@ -28,7 +34,9 @@ function applyThemeVars(themeParams, colorScheme) {
         document.cookie = cookie;
     };
 
-    setCookie('tma_color_scheme', colorScheme);
+    if (colorScheme) {
+        setCookie('tma_color_scheme', colorScheme);
+    }
     if (Object.keys(themeParams).length > 0) {
         setCookie('tma_theme_params', encodeURIComponent(JSON.stringify(themeParams)));
     }
@@ -56,7 +64,7 @@ function loadTelegramSdk() {
 export async function apply(ctx) {
     try {
         let cachedParams = {};
-        let cachedScheme = 'dark';
+        let cachedScheme = null;
         let cookies = document.cookie.split(';');
         for (let i = 0; i < cookies.length; i++) {
             let cookie = cookies[i].trim();
@@ -87,12 +95,12 @@ export async function apply(ctx) {
     tg.ready();
 
     if (Object.keys(tg.themeParams || {}).length > 0) {
-        applyThemeVars(tg.themeParams, tg.colorScheme || 'dark');
+        applyThemeVars(tg.themeParams, tg.colorScheme);
     }
     
     tg.onEvent('themeChanged', () => {
         if (Object.keys(tg.themeParams || {}).length > 0) {
-            applyThemeVars(tg.themeParams, tg.colorScheme || 'dark');
+            applyThemeVars(tg.themeParams, tg.colorScheme);
         }
     });
 
