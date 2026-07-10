@@ -2,25 +2,40 @@
     var tg = window.Telegram && window.Telegram.WebApp;
 
     if (!tg || !tg.initData) {
+        document.documentElement.style.visibility = 'visible';
         document.addEventListener('DOMContentLoaded', function() {
             var route = document.body && document.body.dataset.route;
             var authRoutes = ['app_login', 'telegram_oidc_login', 'telegram_oidc_callback'];
             if (route && authRoutes.includes(route)) return;
-
             document.getElementById('main-content').style.display = 'none';
             var ns = document.getElementById('not-supported');
             if (ns) ns.style.display = 'flex';
-
             var botLink = window.__PLATFORM__ && window.__PLATFORM__.botLink;
             var linkEl = document.getElementById('not-supported-bot-link');
             if (linkEl && botLink) linkEl.href = botLink;
-
             if (typeof lucide !== 'undefined') lucide.createIcons();
         });
         return;
     }
 
     tg.ready();
+    document.documentElement.style.visibility = 'visible';
+            var route = document.body && document.body.dataset.route;
+            var authRoutes = ['app_login', 'telegram_oidc_login', 'telegram_oidc_callback'];
+            if (route && authRoutes.includes(route)) return;
+            document.getElementById('main-content').style.display = 'none';
+            var ns = document.getElementById('not-supported');
+            if (ns) ns.style.display = 'flex';
+            var botLink = window.__PLATFORM__ && window.__PLATFORM__.botLink;
+            var linkEl = document.getElementById('not-supported-bot-link');
+            if (linkEl && botLink) linkEl.href = botLink;
+            if (typeof lucide !== 'undefined') lucide.createIcons();
+        });
+        return;
+    }
+
+    tg.ready();
+    document.documentElement.style.visibility = 'visible';
 
     if (window.__PLATFORM__) {
         window.__PLATFORM__.isEmbedded   = true;
@@ -61,11 +76,32 @@
     updateShimmer();
     tg.onEvent('themeChanged', updateShimmer);
 
-    if (!window.__SERVER_EMBEDDED__) {
+    if (!window.__zeroClickAttempted && !window.__SERVER_EMBEDDED__) {
+        window.__zeroClickAttempted = true;
         var authUrl = new URL(window.location.href);
         authUrl.searchParams.set('initData', tg.initData);
         fetch(authUrl.toString(), { credentials: 'same-origin', redirect: 'follow' })
-            .then(function() { window.location.reload(); })
+            .then(function(response) {
+                if (response.status === 401 || response.status === 403) {
+                    return;
+                }
+                return response.text().then(function() { window.location.reload(); });
+            })
+            .catch(function() {});
+        return;
+    }
+
+    if (!window.__zeroClickAttempted && !window.__SERVER_EMBEDDED__) {
+        window.__zeroClickAttempted = true;
+        var authUrl = new URL(window.location.href);
+        authUrl.searchParams.set('initData', tg.initData);
+        fetch(authUrl.toString(), { credentials: 'same-origin', redirect: 'follow' })
+            .then(function(response) {
+                if (response.status === 401 || response.status === 403) {
+                    return;
+                }
+                return response.text().then(function() { window.location.reload(); });
+            })
             .catch(function() {});
         return;
     }
