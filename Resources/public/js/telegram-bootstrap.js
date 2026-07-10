@@ -30,6 +30,12 @@ export async function detect() {
 
     if (!tg.initData) return null;
 
+    if (Object.keys(tg.themeParams || {}).length > 0) {
+        let cookie = 'tma_theme_params=' + encodeURIComponent(JSON.stringify(tg.themeParams)) + '; path=/; max-age=86400;';
+        if (window.location.protocol === 'https:') cookie += ' SameSite=None; Secure;';
+        document.cookie = cookie;
+    }
+
     tg.ready();
 
     return {

@@ -20,9 +20,18 @@ function applyThemeVars(themeParams, colorScheme) {
         colorScheme === 'dark' ? '255, 255, 255' : '0, 0, 0',
     );
 
-    let cookie = 'tma_color_scheme=' + colorScheme + '; path=/; max-age=86400;';
-    if (window.location.protocol === 'https:') cookie += ' SameSite=None; Secure;';
-    document.cookie = cookie;
+    const setCookie = (name, value) => {
+        let cookie = `${name}=${value}; path=/; max-age=86400;`;
+        if (window.location.protocol === 'https:') {
+            cookie += ' SameSite=None; Secure;';
+        }
+        document.cookie = cookie;
+    };
+
+    setCookie('tma_color_scheme', colorScheme);
+    if (Object.keys(themeParams).length > 0) {
+        setCookie('tma_theme_params', encodeURIComponent(JSON.stringify(themeParams)));
+    }
 }
 
 const ROOT_ROUTES = ['app_index', 'app_categories', 'app_authors', 'app_notifications', 'app_profile', 'app_login'];
@@ -45,6 +54,23 @@ function loadTelegramSdk() {
 }
 
 export async function apply(ctx) {
+    try {
+        let cachedParams = {};
+        let cachedScheme = 'dark';
+        let cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            let cookie = cookies[i].trim();
+            if (cookie.startsWith('tma_theme_params=')) {
+                cachedParams = JSON.parse(decodeURIComponent(cookie.substring('tma_theme_params='.length)));
+            } else if (cookie.startsWith('tma_color_scheme=')) {
+                cachedScheme = cookie.substring('tma_color_scheme='.length);
+            }
+        }
+        if (Object.keys(cachedParams).length > 0) {
+            applyThemeVars(cachedParams, cachedScheme);
+        }
+    } catch (e) {}
+
     let tg;
     try {
         tg = await loadTelegramSdk();
@@ -60,8 +86,15 @@ export async function apply(ctx) {
     // bridge initializes and syncs the theme via events, even if the URL hash is missing.
     tg.ready();
 
-    applyThemeVars(tg.themeParams || {}, tg.colorScheme || 'dark');
-    tg.onEvent('themeChanged', () => applyThemeVars(tg.themeParams || {}, tg.colorScheme || 'dark'));
+    if (Object.keys(tg.themeParams || {}).length > 0) {
+        applyThemeVars(tg.themeParams, tg.colorScheme || 'dark');
+    }
+    
+    tg.onEvent('themeChanged', () => {
+        if (Object.keys(tg.themeParams || {}).length > 0) {
+            applyThemeVars(tg.themeParams, tg.colorScheme || 'dark');
+        }
+    });
 
     if (window.location.pathname === '/login') {
         if (typeof Turbo !== 'undefined') {
