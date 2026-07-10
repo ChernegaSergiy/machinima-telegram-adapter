@@ -8,13 +8,3 @@ services:
         exclude:
             - '../src/MachinimaTelegramAdapterBundle.php'
             - '../src/Oidc/'
-
-    Morfeditorial\MachinimaTelegramAdapter\Oidc\TelegramOidcConfiguration:
-        arguments:
-            $clientId: '%telegram_oidc.client_id%'
-            $clientSecret: '%telegram_oidc.client_secret%'
-            $redirectUri: '%telegram_oidc.redirect_uri%'
-            $label: 'Telegram'
-
-    Morfeditorial\MachinimaTelegramAdapter\Oidc\TelegramOidcProvider:
-        tags: ['app.identity_provider']
