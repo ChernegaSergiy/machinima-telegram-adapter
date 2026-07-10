@@ -20,4 +20,9 @@ final class MachinimaTelegramAdapterBundle extends AbstractBundle
 
         $container->import(__DIR__.'/../config/services.yaml');
     }
+
+    public function getPath(): string
+    {
+        return __DIR__ . '/..';
+    }
 }

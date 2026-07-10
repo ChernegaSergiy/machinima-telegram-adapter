@@ -14,18 +14,39 @@ final class TelegramPlatformAdapter implements PlatformAdapterInterface
 {
     public function supports(Request $request): bool
     {
-        // Telegram Mini App passes initData via header, cookie, or query param
-        return $request->headers->has('X-Init-Data')
+        return $request->headers->has('X-Telegram-Init-Data')
+            || $request->headers->has('X-Init-Data')
             || $request->cookies->has('tma_init_data')
             || $request->query->has('initData');
     }
 
     public function getContext(Request $request): PlatformUiContext
     {
-        $initData = $request->headers->get('X-Init-Data')
+        $initData = $request->headers->get('X-Telegram-Init-Data')
+            ?? $request->headers->get('X-Init-Data')
             ?? $request->cookies->get('tma_init_data')
             ?? $request->query->get('initData');
 
-        return new TelegramPlatformUiContext($initData);
+        $colorScheme = $request->cookies->get('tma_color_scheme', 'dark');
+
+        return new TelegramPlatformUiContext(
+            initData: (string) $initData,
+            colorScheme: $colorScheme,
+        );
+    }
+
+    public function getBridgeTemplatePath(): ?string
+    {
+        return '@MachinimaTelegramAdapter/bridge/telegram.html.twig';
+    }
+
+    public function getZeroClickLoginUrl(): ?string
+    {
+        return '/telegram/zero-click';
+    }
+
+    public function getLoginRouteName(): ?string
+    {
+        return 'app_login';
     }
 }
