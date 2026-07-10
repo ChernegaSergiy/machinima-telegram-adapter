@@ -6,3 +6,13 @@ services:
     Morfeditorial\MachinimaTelegramAdapter\:
         resource: '../src/'
         exclude: '../src/MachinimaTelegramAdapterBundle.php'
+
+    Morfeditorial\MachinimaTelegramAdapter\Oidc\TelegramOidcConfiguration:
+        arguments:
+            $clientId: '%env(int:TELEGRAM_OIDC_CLIENT_ID)%'
+            $clientSecret: '%env(TELEGRAM_OIDC_CLIENT_SECRET)%'
+            $redirectUri: '%env(TELEGRAM_OIDC_REDIRECT_URI)%'
+            $label: 'Telegram'
+
+    Morfeditorial\MachinimaTelegramAdapter\Oidc\TelegramOidcProvider:
+        tags: ['app.identity_provider']
