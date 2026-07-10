@@ -10,14 +10,12 @@ use Symfony\Component\HttpKernel\KernelEvents;
 /**
  * Injects the Telegram WebApp SDK and bridge script into HTML responses.
  *
- * This subscriber runs on kernel.response and injects <script> tags
- * right before </head>. The bridge script detects whether the app is
- * running inside Telegram, sets the __PLATFORM__ globals, stores a
- * cookie for server-side detection, and registers the platform bridge
- * initializer that the core app.js will call.
- *
- * The core application knows nothing about Telegram — all platform-specific
- * logic lives here in the adapter.
+ * Responsibilities:
+ * - Calls tg.ready() immediately so Telegram dismisses its loading screen.
+ * - Sets window.__PLATFORM__.isEmbedded = true when initData is present.
+ * - Runs zero-click login: if the SERVER didn't know it was Telegram (__SERVER_EMBEDDED__ = false),
+ *   fetches the current URL with ?initData= appended to establish a session, then reloads.
+ * - Shows "not supported" screen when NOT in Telegram (no initData).
  */
 final class TelegramBridgeInjector implements EventSubscriberInterface
 {
@@ -58,42 +56,63 @@ final class TelegramBridgeInjector implements EventSubscriberInterface
 <script>
 (function() {
     var tg = window.Telegram && window.Telegram.WebApp;
-    if (!tg || !tg.initData) return;
 
-    // Signal Telegram to dismiss the loading screen immediately.
-    // Without this, Telegram holds a black placeholder forever.
+    if (!tg || !tg.initData) {
+        // Not a Telegram Mini App — show "not supported" for non-auth routes.
+        document.addEventListener('DOMContentLoaded', function() {
+            var route = document.body && document.body.dataset.route;
+            var authRoutes = ['app_login', 'telegram_oidc_login', 'telegram_oidc_callback'];
+            if (route && authRoutes.includes(route)) return;
+
+            var botLink = window.__PLATFORM__ && window.__PLATFORM__.botLink;
+            document.body.innerHTML =
+                '<div style="display:flex;min-height:100vh;align-items:center;justify-content:center;padding:1rem">' +
+                  '<div style="text-align:center;max-width:360px;width:100%">' +
+                    '<p style="margin-bottom:1.5rem;font-weight:600">Цей застосунок призначено для використання в підтримуваному середовищі.</p>' +
+                    (botLink ? '<a href="' + botLink + '" style="display:block;padding:.75rem 1.5rem;font-weight:700;text-decoration:none">Відкрити застосунок</a>' : '') +
+                  '</div>' +
+                '</div>';
+        });
+        return;
+    }
+
+    // ── We are inside a Telegram Mini App ────────────────────────────────────
+
+    // 1. Tell Telegram the app is ready — clears the black loading screen.
     tg.ready();
 
-    // Update the core __PLATFORM__ object (set by base.html.twig)
+    // 2. Update the __PLATFORM__ object that base.html.twig set server-side.
     if (window.__PLATFORM__) {
-        window.__PLATFORM__.isEmbedded = true;
+        window.__PLATFORM__.isEmbedded   = true;
         window.__PLATFORM__.platformName = 'telegram';
-        window.__PLATFORM__.theme = tg.colorScheme || 'dark';
-        window.__PLATFORM__.initData = tg.initData;
+        window.__PLATFORM__.theme        = tg.colorScheme || 'dark';
+        window.__PLATFORM__.initData     = tg.initData;
         window.__PLATFORM__.capabilities = ['tma', 'notifications', 'back_button'];
     }
 
-    // Set cookie so the server can detect Telegram on all subsequent requests
-    var cookieStr = "tma_init_data=" + encodeURIComponent(tg.initData) + "; path=/; max-age=86400;";
-    if (window.location.protocol === 'https:') cookieStr += " SameSite=None; Secure;";
+    // 3. Store cookie so the server recognises Telegram on every subsequent request.
+    var cookieStr = 'tma_init_data=' + encodeURIComponent(tg.initData) + '; path=/; max-age=86400;';
+    if (window.location.protocol === 'https:') cookieStr += ' SameSite=None; Secure;';
     document.cookie = cookieStr;
 
-    // Zero-click login: only needed when the server hasn't seen our cookie yet
-    // (isEmbedded=false). We silently fetch with ?initData= to create a session,
-    // then reload. After reload the cookie is present, server sets isEmbedded=true
-    // and this block is skipped entirely.
-    if (window.__PLATFORM__ && !window.__PLATFORM__.isEmbedded) {
+    // 4. Zero-click login.
+    //    __SERVER_EMBEDDED__ is the value the server baked into the page BEFORE
+    //    we changed isEmbedded above.  If it was false the server had no session
+    //    for this user yet → silently fetch with ?initData= to create one, then
+    //    reload.  After the reload the server will have the cookie → isEmbedded=true
+    //    → __SERVER_EMBEDDED__=true → this block is skipped.
+    if (!window.__SERVER_EMBEDDED__) {
         var authUrl = new URL(window.location.href);
         authUrl.searchParams.set('initData', tg.initData);
         fetch(authUrl.toString(), { credentials: 'same-origin', redirect: 'follow' })
             .then(function() { window.location.reload(); })
             .catch(function() {});
+        return; // don't register bridge init — page is about to reload
     }
 
-    // Register the platform bridge for getPlatformBridge()
+    // 5. Register the platform bridge (only reached when already authenticated).
     window.__PLATFORM_BRIDGE__ = tg;
 
-    // Register platform-specific initialization (called by core initEmbedded())
     window.__PLATFORM_BRIDGE_INIT__ = function() {
         document.body.classList.add('is-tma');
         document.title = 'Morf TMA';
@@ -112,12 +131,15 @@ final class TelegramBridgeInjector implements EventSubscriberInterface
         }
 
         var updateTheme = function() {
-            document.documentElement.style.setProperty('--shimmer-base', tg.colorScheme === 'dark' ? '255, 255, 255' : '0, 0, 0');
+            document.documentElement.style.setProperty(
+                '--shimmer-base',
+                tg.colorScheme === 'dark' ? '255, 255, 255' : '0, 0, 0'
+            );
         };
         updateTheme();
         tg.onEvent('themeChanged', updateTheme);
 
-        // Intercept links to pass initData along
+        // Attach initData to every internal link for authenticator support.
         if (!window.__platformLinkIntercept) {
             document.addEventListener('click', function(e) {
                 var link = e.target.closest('a');
