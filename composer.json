@@ -1,0 +1,19 @@
+{
+    "name": "morfeditorial/machinima-telegram-adapter",
+    "description": "Telegram platform adapter for the Machinima core app.",
+    "type": "symfony-bundle",
+    "license": "LicenseRef-CSSM-Unlimited-2.0",
+    "require": {
+        "php": ">=8.4",
+        "morfeditorial/machinima-app": "*@dev",
+        "morfeditorial/telegram-bot-bundle": "dev-main",
+        "symfony/framework-bundle": "8.1.*",
+        "symfony/notifier": "8.1.*",
+        "symfony/telegram-notifier": "8.1.*"
+    },
+    "autoload": {
+        "psr-4": {
+            "Morfeditorial\\MachinimaTelegramAdapter\\": "src/"
+        }
+    }
+}
