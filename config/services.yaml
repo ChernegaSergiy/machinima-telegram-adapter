@@ -1,0 +1,8 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+
+    Morfeditorial\MachinimaTelegramAdapter\:
+        resource: '../src/'
+        exclude: '../src/MachinimaTelegramAdapterBundle.php'
