@@ -74,17 +74,16 @@ final class TelegramBridgeInjector implements EventSubscriberInterface
     if (window.location.protocol === 'https:') cookieStr += " SameSite=None; Secure;";
     document.cookie = cookieStr;
 
-    // Zero-click login: if the current URL doesn't have initData, reload with it
-    // so the server-side authenticator can validate and create a session.
-    // The flag __tgAuthAttempted prevents infinite redirect loops.
-    if (!window.__tgAuthAttempted) {
-        var url = new URL(window.location.href);
-        if (!url.searchParams.has('initData')) {
-            window.__tgAuthAttempted = true;
-            url.searchParams.set('initData', tg.initData);
-            window.location.replace(url.toString());
-            return;
-        }
+    // Zero-click login: only needed when the server hasn't seen our cookie yet
+    // (isEmbedded=false). We silently fetch with ?initData= to create a session,
+    // then reload. After reload the cookie is present, server sets isEmbedded=true
+    // and this block is skipped entirely.
+    if (window.__PLATFORM__ && !window.__PLATFORM__.isEmbedded) {
+        var authUrl = new URL(window.location.href);
+        authUrl.searchParams.set('initData', tg.initData);
+        fetch(authUrl.toString(), { credentials: 'same-origin', redirect: 'follow' })
+            .then(function() { window.location.reload(); })
+            .catch(function() {});
     }
 
     // Register the platform bridge for getPlatformBridge()
