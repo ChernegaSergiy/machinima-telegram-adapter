@@ -9,9 +9,9 @@ services:
 
     Morfeditorial\MachinimaTelegramAdapter\Oidc\TelegramOidcConfiguration:
         arguments:
-            $clientId: '%env(default:0:int:TELEGRAM_OIDC_CLIENT_ID)%'
-            $clientSecret: '%env(default:0:TELEGRAM_OIDC_CLIENT_SECRET)%'
-            $redirectUri: '%env(default:0:TELEGRAM_OIDC_REDIRECT_URI)%'
+            $clientId: '%env(TELEGRAM_OIDC_CLIENT_ID)%'
+            $clientSecret: '%env(TELEGRAM_OIDC_CLIENT_SECRET)%'
+            $redirectUri: '%env(TELEGRAM_OIDC_REDIRECT_URI)%'
             $label: 'Telegram'
 
     Morfeditorial\MachinimaTelegramAdapter\Oidc\TelegramOidcProvider:
