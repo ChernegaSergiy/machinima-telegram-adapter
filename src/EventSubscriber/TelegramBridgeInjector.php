@@ -60,6 +60,10 @@ final class TelegramBridgeInjector implements EventSubscriberInterface
     var tg = window.Telegram && window.Telegram.WebApp;
     if (!tg || !tg.initData) return;
 
+    // Signal Telegram to dismiss the loading screen immediately.
+    // Without this, Telegram holds a black placeholder forever.
+    tg.ready();
+
     // Update the core __PLATFORM__ object (set by base.html.twig)
     if (window.__PLATFORM__) {
         window.__PLATFORM__.isEmbedded = true;
