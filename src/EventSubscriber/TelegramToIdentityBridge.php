@@ -15,6 +15,7 @@ class TelegramToIdentityBridge
 {
     public function __construct(
         private EventDispatcherInterface $eventDispatcher,
+        private \Symfony\Component\HttpFoundation\RequestStack $requestStack,
     ) {
     }
 
@@ -42,6 +43,11 @@ class TelegramToIdentityBridge
 
         if ($authEvent->getUser()) {
             $event->setUser($authEvent->getUser());
+            
+            $request = $this->requestStack->getCurrentRequest();
+            if ($request && $request->hasSession()) {
+                $request->getSession()->set('active_platform_provider', 'telegram');
+            }
         }
     }
 }
