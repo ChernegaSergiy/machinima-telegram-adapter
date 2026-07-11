@@ -35,3 +35,7 @@ no longer sends the header that authenticator reads (see
 `AuthBootstrapController` in `machinima-app` instead). It's left in place
 here because touching that bundle's own wiring is outside this package's
 source — worth removing once confirmed nothing else depends on it.
+
+## License
+
+This project is licensed under the CSSM Unlimited License v2.0 (CSSM-ULv2). See the [LICENSE](LICENSE) file for details.
