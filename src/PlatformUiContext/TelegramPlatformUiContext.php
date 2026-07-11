@@ -25,7 +25,7 @@ class TelegramPlatformUiContext implements PlatformUiContext
 
     public function getPlatformName(): string
     {
-        return 'telegram_mini_app';
+        return 'telegram';
     }
 
     public function getTheme(): string

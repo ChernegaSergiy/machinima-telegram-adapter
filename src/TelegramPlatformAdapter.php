@@ -23,7 +23,7 @@ final class TelegramPlatformAdapter implements PlatformAdapterInterface
 {
     public function getPlatformName(): string
     {
-        return 'telegram_mini_app';
+        return 'telegram';
     }
 
     public function getUiContext(Request $request): PlatformUiContext

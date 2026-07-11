@@ -115,8 +115,8 @@ export async function apply(ctx) {
 
     let backButtonAssigned = false;
 
-    window.addEventListener('platform:navigate', (e) => {
-        const isRoot = ROOT_ROUTES.includes(e.detail.route);
+    function handleNavigation(route) {
+        const isRoot = ROOT_ROUTES.includes(route);
 
         if (isRoot) {
             tg.BackButton.hide();
@@ -127,5 +127,13 @@ export async function apply(ctx) {
                 backButtonAssigned = true;
             }
         }
+    }
+
+    if (document.body && document.body.dataset.route) {
+        handleNavigation(document.body.dataset.route);
+    }
+
+    window.addEventListener('platform:navigate', (e) => {
+        handleNavigation(e.detail.route);
     });
 }
