@@ -62,9 +62,9 @@ function loadTelegramSdk() {
 }
 
 export async function apply(ctx) {
+    let cachedParams = {};
+    let cachedScheme = null;
     try {
-        let cachedParams = {};
-        let cachedScheme = null;
         let cookies = document.cookie.split(';');
         for (let i = 0; i < cookies.length; i++) {
             let cookie = cookies[i].trim();
@@ -104,15 +104,6 @@ export async function apply(ctx) {
         }
     });
 
-    if (window.location.pathname === '/login') {
-        if (typeof Turbo !== 'undefined') {
-            Turbo.visit('/', { action: 'replace' });
-        } else {
-            window.location.href = '/';
-        }
-        return;
-    }
-
     let backButtonAssigned = false;
 
     function handleNavigation(route) {
@@ -135,5 +126,23 @@ export async function apply(ctx) {
 
     window.addEventListener('platform:navigate', (e) => {
         handleNavigation(e.detail.route);
+        
+        // Turbo completely replaces the body and sometimes merges the html tag, 
+        // which can wipe out our inline styles and classes. We must re-apply them.
+        document.body.classList.add('is-tma');
+        
+        if (Object.keys(tg.themeParams || {}).length > 0) {
+            applyThemeVars(tg.themeParams, tg.colorScheme);
+        } else if (Object.keys(cachedParams || {}).length > 0) {
+            applyThemeVars(cachedParams, cachedScheme);
+        }
     });
+
+    if (window.location.pathname === '/login') {
+        if (typeof Turbo !== 'undefined') {
+            Turbo.visit('/', { action: 'replace' });
+        } else {
+            window.location.href = '/';
+        }
+    }
 }
