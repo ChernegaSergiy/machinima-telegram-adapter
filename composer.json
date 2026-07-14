@@ -11,7 +11,7 @@
     ],
     "require": {
         "php": ">=8.4",
-        "morfeditorial/machinima-app": "dev-main",
+        "morfeditorial/machinima-core": "dev-main",
         "morfeditorial/telegram-bot-bundle": "dev-main",
         "symfony/framework-bundle": "8.1.*",
         "symfony/http-client": "8.1.*",

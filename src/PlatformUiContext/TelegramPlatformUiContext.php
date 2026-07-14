@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Morfeditorial\MachinimaTelegramAdapter\PlatformUiContext;
 
-use App\Contract\PlatformUiContext;
+use Morfeditorial\MachinimaCoreBundle\Contract\PlatformUiContext;
 
 class TelegramPlatformUiContext implements PlatformUiContext
 {

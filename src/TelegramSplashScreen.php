@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace Morfeditorial\MachinimaTelegramAdapter;
 
-use App\Contract\SplashScreenInterface;
+use Morfeditorial\MachinimaCoreBundle\Contract\SplashScreenInterface;
 
 final class TelegramSplashScreen implements SplashScreenInterface
 {

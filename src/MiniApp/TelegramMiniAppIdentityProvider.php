@@ -4,8 +4,8 @@ declare(strict_types=1);
 
 namespace Morfeditorial\MachinimaTelegramAdapter\MiniApp;
 
-use App\Contract\BootstrapOnlyIdentityProvider;
-use App\Contract\IdentityAssertion;
+use Morfeditorial\MachinimaCoreBundle\Contract\BootstrapOnlyIdentityProvider;
+use Morfeditorial\MachinimaCoreBundle\Contract\IdentityAssertion;
 
 /**
  * Validates the raw `initData` string a Telegram Mini App receives from

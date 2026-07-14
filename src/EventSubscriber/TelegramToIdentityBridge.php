@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Morfeditorial\MachinimaTelegramAdapter\EventSubscriber;
 
-use App\Contract\IdentityAssertion;
+use Morfeditorial\MachinimaCoreBundle\Contract\IdentityAssertion;
 use App\Event\UserAuthenticatedEvent;
 use Morfeditorial\TelegramBotBundle\Event\TelegramUserAuthenticatedEvent;
 use Symfony\Component\EventDispatcher\Attribute\AsEventListener;

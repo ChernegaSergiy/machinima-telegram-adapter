@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Morfeditorial\MachinimaTelegramAdapter\Oidc;
 
-use App\Contract\IdentityAssertion;
-use App\Contract\IdentityProviderMetadataProvider;
-use App\Contract\IdentityProviderPort;
+use Morfeditorial\MachinimaCoreBundle\Contract\IdentityAssertion;
+use Morfeditorial\MachinimaCoreBundle\Contract\IdentityProviderMetadataProvider;
+use Morfeditorial\MachinimaCoreBundle\Contract\IdentityProviderPort;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 

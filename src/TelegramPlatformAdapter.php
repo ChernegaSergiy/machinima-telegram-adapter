@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace Morfeditorial\MachinimaTelegramAdapter;
 
-use App\Contract\PlatformAdapterInterface;
-use App\Contract\PlatformUiContext;
+use Morfeditorial\MachinimaCoreBundle\Contract\PlatformAdapterInterface;
+use Morfeditorial\MachinimaCoreBundle\Contract\PlatformUiContext;
 use Morfeditorial\MachinimaTelegramAdapter\PlatformUiContext\TelegramPlatformUiContext;
 use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
 use Symfony\Component\HttpFoundation\Request;
