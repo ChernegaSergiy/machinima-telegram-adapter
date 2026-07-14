@@ -16,4 +16,9 @@ final class TelegramSplashScreen implements SplashScreenInterface
     {
         return '@MachinimaTelegramAdapter/splash/index.html.twig';
     }
+
+    public function getDisplayCondition(): ?string
+    {
+        return "window.location.hash.includes('tgWebAppData=') || document.cookie.includes('tma_theme_params=')";
+    }
 }
