@@ -1,4 +1,4 @@
-import { injectAndHideSplash } from './telegram-splash.js';
+import { dismissSplashScreen } from './telegram-splash.js';
 
 /**
  * Bootstrap module for the Telegram Mini App platform adapter.
@@ -23,7 +23,7 @@ function loadTelegramSdk() {
 }
 
 export async function detect() {
-    injectAndHideSplash();
+    dismissSplashScreen();
 
     let tg;
     try {

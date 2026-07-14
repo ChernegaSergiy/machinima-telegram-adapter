@@ -1,4 +1,4 @@
-import { injectAndHideSplash } from './telegram-splash.js';
+import { dismissSplashScreen } from './telegram-splash.js';
 
 /**
  * UI-hints module for the Telegram Mini App platform adapter.
@@ -64,7 +64,7 @@ function loadTelegramSdk() {
 }
 
 export async function apply(ctx) {
-    injectAndHideSplash();
+    dismissSplashScreen();
 
     let cachedParams = {};
     let cachedScheme = null;

@@ -1,4 +1,4 @@
-export function injectAndHideSplash() {
+export function dismissSplashScreen() {
     let splashElement = document.getElementById('morf-splash');
     
     if (!splashElement) {
