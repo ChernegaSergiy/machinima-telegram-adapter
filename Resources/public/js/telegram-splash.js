@@ -1,8 +1,15 @@
 export function injectAndHideSplash() {
-    const splashTemplate = document.getElementById('splash-template-telegram');
-    if (splashTemplate && !document.getElementById('morf-splash')) {
-        document.body.appendChild(splashTemplate.content.cloneNode(true));
-        
+    let splashElement = document.getElementById('morf-splash');
+    
+    if (!splashElement) {
+        const splashTemplate = document.getElementById('splash-template-telegram');
+        if (splashTemplate) {
+            document.body.appendChild(splashTemplate.content.cloneNode(true));
+            splashElement = document.getElementById('morf-splash');
+        }
+    }
+    
+    if (splashElement) {
         const hideSplash = () => {
             const s = document.getElementById('morf-splash');
             if (!s) return;
