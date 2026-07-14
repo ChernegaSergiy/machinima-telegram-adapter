@@ -1,3 +1,5 @@
+import { injectAndHideSplash } from './telegram-splash.js';
+
 /**
  * Bootstrap module for the Telegram Mini App platform adapter.
  */
@@ -36,11 +38,8 @@ export async function detect() {
         document.cookie = cookie;
     }
 
-    const splashTemplate = document.getElementById('splash-template-telegram');
-    if (splashTemplate && !document.getElementById('morf-splash')) {
-        document.body.appendChild(splashTemplate.content.cloneNode(true));
-    }
-
+    injectAndHideSplash();
+    
     tg.ready();
 
     return {

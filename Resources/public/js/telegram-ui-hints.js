@@ -1,3 +1,5 @@
+import { injectAndHideSplash } from './telegram-splash.js';
+
 /**
  * UI-hints module for the Telegram Mini App platform adapter.
  */
@@ -92,10 +94,7 @@ export async function apply(ctx) {
 
     // We must call ready() even if we are not bootstrapping, so the Telegram
     // bridge initializes and syncs the theme via events, even if the URL hash is missing.
-    const splashTemplate = document.getElementById('splash-template-telegram');
-    if (splashTemplate && !document.getElementById('morf-splash')) {
-        document.body.appendChild(splashTemplate.content.cloneNode(true));
-    }
+    injectAndHideSplash();
     
     tg.ready();
 
