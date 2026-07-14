@@ -92,6 +92,11 @@ export async function apply(ctx) {
 
     // We must call ready() even if we are not bootstrapping, so the Telegram
     // bridge initializes and syncs the theme via events, even if the URL hash is missing.
+    const splashTemplate = document.getElementById('splash-template-telegram');
+    if (splashTemplate && !document.getElementById('morf-splash')) {
+        document.body.appendChild(splashTemplate.content.cloneNode(true));
+    }
+    
     tg.ready();
 
     if (Object.keys(tg.themeParams || {}).length > 0) {
