@@ -64,6 +64,8 @@ function loadTelegramSdk() {
 }
 
 export async function apply(ctx) {
+    injectAndHideSplash();
+
     let cachedParams = {};
     let cachedScheme = null;
     try {
@@ -94,8 +96,6 @@ export async function apply(ctx) {
 
     // We must call ready() even if we are not bootstrapping, so the Telegram
     // bridge initializes and syncs the theme via events, even if the URL hash is missing.
-    injectAndHideSplash();
-    
     tg.ready();
 
     if (Object.keys(tg.themeParams || {}).length > 0) {

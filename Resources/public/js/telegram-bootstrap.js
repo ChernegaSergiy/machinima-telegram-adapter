@@ -23,6 +23,8 @@ function loadTelegramSdk() {
 }
 
 export async function detect() {
+    injectAndHideSplash();
+
     let tg;
     try {
         tg = await loadTelegramSdk();
@@ -37,8 +39,6 @@ export async function detect() {
         if (window.location.protocol === 'https:') cookie += ' SameSite=None; Secure;';
         document.cookie = cookie;
     }
-
-    injectAndHideSplash();
     
     tg.ready();
 
