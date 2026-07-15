@@ -1,12 +1,24 @@
-###> symfony/framework-bundle ###
-/.env
-/.env.local
-/.env.local.php
-/.env.*.local
-/var/
+# Composer
 /vendor/
-###< symfony/framework-bundle ###
-
-###> libraries ###
 /composer.lock
-###< libraries ###
+
+# Caches and logs
+/var/
+/logs/
+
+# Environment variables
+.env
+.env.*
+
+# IDEs
+.idea/
+.vscode/
+
+# OS generated files
+.DS_Store
+Thumbs.db
+
+# Testing and Code Quality
+.phpunit.result.cache
+.php-cs-fixer.cache
+.php-cs-fixer.php
