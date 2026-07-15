@@ -17,7 +17,7 @@
         "symfony/http-client": "8.1.*",
         "symfony/notifier": "8.1.*",
         "symfony/telegram-notifier": "8.1.*",
-        "lcobucci/jwt": "^4.0"
+        "lcobucci/jwt": "^5.6"
     },
     "autoload": {
         "psr-4": {
