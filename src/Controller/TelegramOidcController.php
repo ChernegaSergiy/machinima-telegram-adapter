@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Morfeditorial\MachinimaTelegramAdapter\Controller;
 
-use App\Event\UserAuthenticatedEvent;
+use Morfeditorial\MachinimaCoreBundle\Event\UserAuthenticatedEvent;
 use Morfeditorial\MachinimaTelegramAdapter\Oidc\TelegramOidcProvider;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\RedirectResponse;
