@@ -10,7 +10,11 @@
 
 </div>
 
-Provides the platform-specific implementations of the core `Morfeditorial\MachinimaCoreBundle\Contract\*` ports for the Telegram WebApp surface:
+**machinima-telegram-adapter** is a Symfony bundle that implements the platform-specific integration between the Machinima core and the Telegram WebApp surface. It enables seamless zero-click authentication, UI hints processing, and native Telegram notification delivery by satisfying the core platform contracts.
+
+## Architecture
+
+Provides the platform-specific implementations of the core `Morfeditorial\MachinimaCoreBundle\Contract\*` ports:
 
 - `Morfeditorial\MachinimaCoreBundle\Contract\PlatformAdapterInterface` → `Morfeditorial\MachinimaTelegramAdapter\TelegramPlatformAdapter`
   - bootstrap module (`Resources/public/js/telegram-bootstrap.js`) — client-side zero-click detection, posted to core's `/api/auth/bootstrap`
