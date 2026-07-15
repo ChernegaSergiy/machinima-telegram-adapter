@@ -29,5 +29,7 @@
             "symfony/runtime": true,
             "symfony/flex": true
         }
-    }
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
 }
