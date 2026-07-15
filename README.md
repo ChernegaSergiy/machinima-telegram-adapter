@@ -6,6 +6,10 @@
 
 *Telegram platform adapter for the Machinima platform.*
 
+[![Latest Stable Version](https://img.shields.io/packagist/v/morfeditorial/machinima-telegram-adapter.svg?label=Packagist&logo=packagist)](https://packagist.org/packages/morfeditorial/machinima-telegram-adapter)
+[![Total Downloads](https://img.shields.io/packagist/dt/morfeditorial/machinima-telegram-adapter.svg?label=Downloads&logo=packagist)](https://packagist.org/packages/morfeditorial/machinima-telegram-adapter)
+[![License](https://img.shields.io/packagist/l/morfeditorial/machinima-telegram-adapter.svg?label=Licence&logo=open-source-initiative)](https://packagist.org/packages/morfeditorial/machinima-telegram-adapter)
+
 [Architecture](#architecture) · [Env vars](#env-vars) · [Contributing](#contributing)
 
 ---
