@@ -6,6 +6,8 @@
 
 *Telegram platform adapter for the Machinima platform.*
 
+[Architecture](#architecture) · [Env vars](#env-vars) · [Contributing](#contributing)
+
 ---
 
 </div>
