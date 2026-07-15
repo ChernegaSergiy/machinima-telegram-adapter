@@ -1,6 +1,14 @@
+<div align="center">
+
+<img src="assets/images/morf-logo.svg" alt="MORF" width="320" />
+
 # machinima-telegram-adapter
 
-Telegram platform adapter for the Machinima platform.
+*Telegram platform adapter for the Machinima platform.*
+
+---
+
+</div>
 
 Provides the platform-specific implementations of the core `Morfeditorial\MachinimaCoreBundle\Contract\*` ports for the Telegram WebApp surface:
 
